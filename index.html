@@ -24,6 +24,7 @@
   --accent-soft:#eef0ff;
   --card:#ffffff;
   --nav-bg:rgba(255,255,255,.78);
+  --menu-bg:#ffffff;
   --shadow:0 24px 60px -24px rgba(17,17,17,.14);
 }
 html.dark{
@@ -36,6 +37,7 @@ html.dark{
   --accent-soft:#181b2e;
   --card:#101013;
   --nav-bg:rgba(12,12,14,.78);
+  --menu-bg:#101014;
   --shadow:0 24px 60px -24px rgba(0,0,0,.6);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -101,8 +103,10 @@ section[id],footer[id]{scroll-margin-top:110px}
   .nav-links{
     display:none;position:absolute;top:calc(100% + 10px);left:0;right:0;
     flex-direction:column;gap:4px;padding:14px;
-    background:var(--nav-bg);backdrop-filter:blur(14px);
+    background:var(--menu-bg);
+    backdrop-filter:blur(28px) saturate(1.6);-webkit-backdrop-filter:blur(28px) saturate(1.6);
     border:1px solid var(--border);border-radius:24px;
+    box-shadow:0 24px 50px -18px rgba(0,0,0,.28);
   }
   .nav-links.open{display:flex}
   .nav-links a{padding:10px 12px}
@@ -295,9 +299,9 @@ section[id],footer[id]{scroll-margin-top:110px}
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--border);padding:56px 0 40px}
 .foot-name{
-  font-family:'Geist',sans-serif;font-weight:700;letter-spacing:.02em;
-  font-size:clamp(64px,14vw,190px);color:var(--text);opacity:.06;line-height:1;
-  user-select:none;margin-bottom:44px;white-space:nowrap;overflow:hidden;text-align:center;
+  font-family:'Geist',sans-serif;font-weight:700;letter-spacing:-.01em;
+  font-size:clamp(36px,12.5vw,190px);color:var(--text);opacity:.13;line-height:1;
+  user-select:none;margin-bottom:44px;white-space:nowrap;overflow:hidden;text-align:left;
 }
 .foot-row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
 .foot-row nav{display:flex;gap:22px;flex-wrap:wrap}
