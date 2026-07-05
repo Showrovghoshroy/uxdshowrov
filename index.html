@@ -135,12 +135,28 @@ section[id],footer[id]{scroll-margin-top:110px}
 .btn-ghost{border:1px solid var(--border);color:var(--text)}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
 .hero-grid{display:grid;grid-template-columns:1fr auto;gap:56px;align-items:stretch}
-.hero-photo{
-  width:min(380px,85vw);position:relative;
+.hero-photo{width:min(380px,85vw);position:relative;perspective:1000px}
+.photo-card{
+  position:absolute;inset:0;z-index:1;
   border:1px solid var(--border);border-radius:28px;overflow:hidden;
-  background:#f9f9fc;
+  background:#f9f9fc;box-shadow:var(--shadow);
+  transform-style:preserve-3d;transition:transform .15s ease-out,box-shadow .3s;
+  will-change:transform;
 }
-.hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
+.hero-photo:hover .photo-card{box-shadow:0 34px 70px -24px rgba(17,17,17,.24)}
+.photo-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
+.stamp{
+  position:absolute;top:50%;left:50%;width:150px;height:150px;margin:-75px 0 0 -75px;
+  z-index:0;filter:drop-shadow(0 10px 24px rgba(17,17,17,.12));
+  transition:transform .55s cubic-bezier(.2,.8,.2,1);transform:translateX(0) scale(.55);
+}
+.hero-photo:hover .stamp{transform:translateX(195px) scale(1)}
+.stamp-spin{transform-origin:80px 80px;animation:stampSpin 14s linear infinite}
+@keyframes stampSpin{to{transform:rotate(360deg)}}
+@media(hover:none),(pointer:coarse){
+  .stamp{top:-16px;right:-12px;left:auto;margin:0;transform:scale(.72);transform-origin:top right;z-index:2}
+}
+@media(max-width:860px){.hero-photo:hover .stamp{transform:scale(.72)}}
 .hero-grid > div:first-child .hero-actions{margin-bottom:0}
 @media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:36px}.hero-photo{order:2;width:min(320px,80vw);height:430px;margin:0 auto}.hero{padding-top:150px}}
 .hero-actions{margin-bottom:0}
@@ -362,7 +378,22 @@ body.cursor-hover .cursor-ring{width:56px;height:56px;opacity:.9}
         </div>
       </div>
       <div class="hero-photo reveal d2">
-        <img src="me.webp" alt="Portrait of Showrov Ghosh Roy" loading="eager" />
+        <div class="stamp" aria-hidden="true">
+          <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <defs><path id="stampCircle" d="M80,80 m-56,0 a56,56 0 1,1 112,0 a56,56 0 1,1 -112,0"/></defs>
+            <circle cx="80" cy="80" r="79" fill="var(--bg)" stroke="var(--border)" stroke-width="1"/>
+            <circle cx="80" cy="80" r="40" fill="none" stroke="var(--border)" stroke-width="1"/>
+            <g class="stamp-spin">
+              <text font-family="Geist, Inter, sans-serif" font-size="14.5" font-weight="600" letter-spacing="3.5" fill="var(--text)">
+                <textPath href="#stampCircle">UX DESIGNER • UX DESIGNER •</textPath>
+              </text>
+            </g>
+            <text x="80" y="88" text-anchor="middle" font-size="24" fill="var(--accent)">✦</text>
+          </svg>
+        </div>
+        <div class="photo-card">
+          <img src="me.webp" alt="Portrait of Showrov Ghosh Roy" loading="eager" />
+        </div>
       </div>
     </div>
     <div class="hero-stats reveal">
@@ -708,6 +739,26 @@ function handleForm(e){
     });
   return false;
 }
+// ------- 3D tilt on hero photo card -------
+(function(){
+  const wrap=document.querySelector('.hero-photo');
+  const card=document.querySelector('.photo-card');
+  if(!wrap||!card)return;
+  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  wrap.addEventListener('mousemove',e=>{
+    const r=wrap.getBoundingClientRect();
+    const px=(e.clientX-r.left)/r.width-.5;   // -0.5 .. 0.5
+    const py=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`rotateY(${px*14}deg) rotateX(${py*-14}deg) scale(1.02)`;
+  });
+  wrap.addEventListener('mouseleave',()=>{
+    card.style.transition='transform .5s ease';
+    card.style.transform='rotateY(0) rotateX(0) scale(1)';
+    setTimeout(()=>card.style.transition='',500);
+  });
+})();
+
 // ------- custom cursor (Portavia style) -------
 if(window.matchMedia('(hover:hover) and (pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
   const dot=document.createElement('div'),ring=document.createElement('div');
